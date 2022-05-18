@@ -1,9 +1,6 @@
-from typing_extensions import Self
-from unicodedata import name
 import discord
 from discord.ext import commands, tasks
-from discord_ui import SelectMenu, SelectOption, UI, components, Button
-from types import SimpleNamespace
+from discord_ui import SelectMenu, SelectOption, UI, Button
 import random
 from discord.utils import get
 

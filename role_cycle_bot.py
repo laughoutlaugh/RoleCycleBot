@@ -362,7 +362,7 @@ async def commands(message):
 
 
 
-bot.run("OTcyMTU1NTY1NTQ1NDg4Mzk1.GxeYXo.m3AmZfKivDniVAXj6Ozc4DlAwq04iXLnvKl4LU")
+bot.run("")
 
 """
 rcb-discord

@@ -1,31 +1,44 @@
+import os
 import discord
 from discord.ext import commands, tasks
 from discord_ui import SelectMenu, SelectOption, UI, Button
-import random
 from discord.utils import get
+import random
+
+
+# Make Replit keep it online
+from flask import Flask
+from threading import Thread
+
+app = Flask('')
+
+@app.route('/')
+def main():
+  return "Your Bot Is Ready"
+
+def run():
+  app.run(host="0.0.0.0", port=8000)
+
+def keep_alive():
+  server = Thread(target=run)
+  server.start()
 
 
 intents = discord.Intents().all()
 bot = commands.Bot(intents=intents, command_prefix = commands.when_mentioned_or('rcb.'))
 ui = UI(bot)
 
-tguild = None
-
-
 cycling_status_list = []
 role_cycle_choices_dict = {}
 speed_cycle_choices_dict = {}
 
 
-
+# Start event
 @bot.event
 async def on_ready():
     print("I am running on " + bot.user.name)
     print("With the ID: " + str(bot.user.id))
     print('Bot is ready to be used')
-
-    tguild = bot.get_guild(755930762485825627)
-    print(tguild.id)
 
     for guild in bot.guilds:
         print(guild)
@@ -37,62 +50,54 @@ async def on_ready():
     four_loop.start()
 
 
-def rolecovert(role_cycle_choices_dict,curr_user):
-    tguild = bot.get_guild(755930762485825627)
-    user_role_converted = []
-
-    for strole in role_cycle_choices_dict[curr_user]:
-        role_full = get(tguild.roles, id=strole)
-        user_role_converted.append(role_full)
-    return user_role_converted
-
-
-def commonelems(available_roles,role_user):
+# Define functions
+# Find number of common items
+def simnum(all_roles,role_user):
     common=0
-    for value in available_roles:
+    for value in all_roles:
         if value in role_user:
-            common=1
+            common+=1
     return int(common)
 
 
-def roleidget(choice_role_names):
+# Get roles from names
+def rolefullget(choice_role_names):
     tguild = bot.get_guild(755930762485825627)
     user_role_id = []
 
     for strole in choice_role_names:
         role_full = get(tguild.roles, name=strole)
-        role_id = role_full.id
         user_role_id.append(role_full)
     return user_role_id
 
 
-def notsimroleclear(role_user,available_roles):
+# Get roles in user that are not color roles
+def notsimroleclear(role_user,all_roles):
     for simrole in role_user:
         not_color_roles = []
 
-        if simrole not in available_roles:
+        if simrole not in all_roles:
             not_color_roles.append(simrole)
         else:
             pass
     return not_color_roles
 
 
-def notsimrolefind(current_roles,color_roles_sim):
+# Get roles in user that are not color roles
+def notsimrolefind(current_roles,all_roles):
     for simrole in current_roles:
         not_color_roles = []
-        yup_color_roles = []
 
-        if simrole not in color_roles_sim:
+        if simrole not in all_roles:
             not_color_roles.append(simrole)
         else:
             pass
     return not_color_roles
 
 
+# Make loops
 @tasks.loop(seconds = 1)
 async def one_loop():
-    tguild = bot.get_guild(755930762485825627)
-    
     for gay in cycling_status_list:
         if speed_cycle_choices_dict[gay] == ['1']:
             tguild = bot.get_guild(755930762485825627)
@@ -103,14 +108,12 @@ async def one_loop():
             del all_roles[22]
 
             current_roles = list(total_user.roles)
-            color_roles_sim = list(all_roles)
             number_chosen_roles = len(role_cycle_choices_dict[gay])
             
             role_switch_num = random.randrange(0, number_chosen_roles, 1)
             get_role_list = list(role_cycle_choices_dict.get(gay))
-            get_now_role = get_role_list[role_switch_num]
-            now_role = get_now_role
-            new_current_roles = notsimrolefind(current_roles,color_roles_sim)
+            now_role = get_role_list[role_switch_num]
+            new_current_roles = notsimrolefind(current_roles,all_roles)
             new_current_roles.append(now_role)
 
             if now_role in current_roles:
@@ -123,8 +126,6 @@ async def one_loop():
 
 @tasks.loop(seconds = 2)
 async def two_loop():
-    tguild = bot.get_guild(755930762485825627)
-    
     for gay in cycling_status_list:
         if speed_cycle_choices_dict[gay] == ['2']:
             tguild = bot.get_guild(755930762485825627)
@@ -135,14 +136,12 @@ async def two_loop():
             del all_roles[22]
 
             current_roles = list(total_user.roles)
-            color_roles_sim = list(all_roles)
             number_chosen_roles = len(role_cycle_choices_dict[gay])
             
             role_switch_num = random.randrange(0, number_chosen_roles, 1)
             get_role_list = list(role_cycle_choices_dict.get(gay))
-            get_now_role = get_role_list[role_switch_num]
-            now_role = get_now_role
-            new_current_roles = notsimrolefind(current_roles,color_roles_sim)
+            now_role = get_role_list[role_switch_num]
+            new_current_roles = notsimrolefind(current_roles,all_roles)
             new_current_roles.append(now_role)
 
             if now_role in current_roles:
@@ -155,8 +154,6 @@ async def two_loop():
 
 @tasks.loop(seconds = 3)
 async def three_loop():
-    tguild = bot.get_guild(755930762485825627)
-    
     for gay in cycling_status_list:
         if speed_cycle_choices_dict[gay] == ['3']:
             tguild = bot.get_guild(755930762485825627)
@@ -167,14 +164,12 @@ async def three_loop():
             del all_roles[22]
 
             current_roles = list(total_user.roles)
-            color_roles_sim = list(all_roles)
             number_chosen_roles = len(role_cycle_choices_dict[gay])
             
             role_switch_num = random.randrange(0, number_chosen_roles, 1)
             get_role_list = list(role_cycle_choices_dict.get(gay))
-            get_now_role = get_role_list[role_switch_num]
-            now_role = get_now_role
-            new_current_roles = notsimrolefind(current_roles,color_roles_sim)
+            now_role = get_role_list[role_switch_num]
+            new_current_roles = notsimrolefind(current_roles,all_roles)
             new_current_roles.append(now_role)
 
             if now_role in current_roles:
@@ -187,8 +182,6 @@ async def three_loop():
 
 @tasks.loop(seconds = 4)
 async def four_loop():
-    tguild = bot.get_guild(755930762485825627)
-    
     for gay in cycling_status_list:
         if speed_cycle_choices_dict[gay] == ['4']:
             tguild = bot.get_guild(755930762485825627)
@@ -199,14 +192,12 @@ async def four_loop():
             del all_roles[22]
 
             current_roles = list(total_user.roles)
-            color_roles_sim = list(all_roles)
             number_chosen_roles = len(role_cycle_choices_dict[gay])
             
             role_switch_num = random.randrange(0, number_chosen_roles, 1)
             get_role_list = list(role_cycle_choices_dict.get(gay))
-            get_now_role = get_role_list[role_switch_num]
-            now_role = get_now_role
-            new_current_roles = notsimrolefind(current_roles,color_roles_sim)
+            now_role = get_role_list[role_switch_num]
+            new_current_roles = notsimrolefind(current_roles,all_roles)
             new_current_roles.append(now_role)
 
             if now_role in current_roles:
@@ -217,6 +208,7 @@ async def four_loop():
             pass
 
 
+# Make startcycle command
 @bot.command()
 async def startcycle(message):
         tguild = bot.get_guild(755930762485825627)
@@ -225,17 +217,14 @@ async def startcycle(message):
         del all_roles[0]
         del all_roles[22]
         del all_roles[22]
-        available_roles =  all_roles
-        role_number = len(available_roles)
-        role_order = available_roles[::-1]
-
-        roles_user = message.author.roles
+        role_order = all_roles[::-1]
+        role_user = message.author.roles
 
 
-        if commonelems(available_roles,roles_user) > 0:
+        if simnum(all_roles,role_user) > 0:
             await message.channel.send('You already have a color role. Please remove it before running the bot.')
         
-        if commonelems(available_roles,roles_user) == 0:
+        if simnum(all_roles,role_user) == 0:
             await ui.components.send(message.channel, "Hello! Please select all of the roles that you would like to cycle through :)", components=[
                 SelectMenu(
                     options=[
@@ -261,14 +250,15 @@ async def startcycle(message):
                         SelectOption(20, label=str(role_order[19])),
                         SelectOption(21, label=str(role_order[20])),
                         SelectOption(22, label=str(role_order[21]))
-                ],min_values=2, max_values=8, placeholder="Pick some roles")
+                ],min_values=2, placeholder="Pick some roles")
                 ])
 
 
+# Listen for SelectMenu response
 @bot.listen('on_menu_select')
 async def on_role_menu(menu):
     choice_role_names = [value.content for value in menu.selected_options]
-    role_cycle_choices_dict[menu.author.id]=roleidget(choice_role_names)
+    role_cycle_choices_dict[menu.author.id]=rolefullget(choice_role_names)
     
     await menu.respond("You selected " + ', '.join([value.content for value in menu.selected_options]) + "\nNow, in seconds, how quickly should I switch between these roles?", components=[
         Button('1'),
@@ -277,16 +267,17 @@ async def on_role_menu(menu):
         Button('4')
     ])
 
-# If choose '1/2' warn about lagging
 
+# Listen for Button response
 @bot.listen('on_button')
 async def on_button(btn):
     speed_cycle_choices_dict[btn.author.id]=[btn.component.content]
     cycling_status_list.append(btn.author.id)
 
     await btn.respond("You chose " + btn.component.content)
+  
 
-
+# Make stopcycle command
 @bot.command()
 async def stopcycle(message):
     if message.author.id in cycling_status_list:
@@ -296,20 +287,18 @@ async def stopcycle(message):
 
         tguild = bot.get_guild(755930762485825627)
         all_roles = tguild.me.roles
-        
         del all_roles[0]
         del all_roles[22]
         del all_roles[22]
-        available_roles =  all_roles
-
         role_user = message.author.roles
 
-        await message.author.edit(roles=notsimroleclear(role_user,available_roles))
+        await message.author.edit(roles=notsimroleclear(role_user,all_roles))
         await message.channel.send('Your cycle has been stopped')
     else:
         await message.channel.send('You are not currently cycling')
 
 
+# Make pausecycle command
 @bot.command()
 async def pausecycle(message):
     if message.author.id in cycling_status_list:
@@ -319,6 +308,7 @@ async def pausecycle(message):
         await message.channel.send('You are not currently cycling')
 
 
+# Make unpausecycle command
 @bot.command()
 async def unpausecycle(message):
     if message.author.id not in cycling_status_list:
@@ -328,28 +318,26 @@ async def unpausecycle(message):
         await message.channel.send('You are already cycling')
 
 
+# Make clearcolorroles command
 @bot.command()
 async def clearcolorroles(message):
         tguild = bot.get_guild(755930762485825627)
 
         all_roles = tguild.me.roles
-        
         del all_roles[0]
         del all_roles[22]
         del all_roles[22]
-        available_roles =  all_roles
-
         role_user = message.author.roles
 
-
-        if commonelems(available_roles,role_user) > 0:
-            await message.author.edit(roles=notsimroleclear(role_user,available_roles))
+        if simnum(all_roles,role_user) > 0:
+            await message.author.edit(roles=notsimroleclear(role_user,all_roles))
             await message.channel.send('Your color roles have been removed')
 
-        if commonelems(available_roles,role_user) == 0:
+        if simnum(all_roles,role_user) == 0:
             await message.channel.send('You have no color roles')
-        
 
+
+# Make command list command
 @bot.command()
 async def commands(message):
     await message.channel.send(
@@ -357,10 +345,5 @@ async def commands(message):
     )
 
 
-
-
-bot.run("")
-
-"""
-rcb-discord
-"""
+token = os.environ['TOKEN']
+bot.run(token)
